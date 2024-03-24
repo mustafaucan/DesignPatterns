@@ -1,4 +1,4 @@
-The .NET Implementation of the Saga Template
+# The .NET Implementation of the Saga Pattern
 
 Definition:
 
