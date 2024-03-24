@@ -16,14 +16,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMassTransit(opt =>
 {
     opt.AddConsumer<OrderCreatedEventConsumer>();
+    
     opt.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("RabbitMq"));
-        cfg.ReceiveEndpoint(RabbitMqSettingsConst.StockOrderCreatedEventQueueName,e =>
-        {
+        cfg.ReceiveEndpoint(RabbitMqSettingsConst.StockOrderCreatedEventQueueName, e =>
+        {            
             e.ConfigureConsumer<OrderCreatedEventConsumer>(context);
-        });
-    });
+        });      
+    });    
 });
 
 builder.Services.AddDbContext<AppDbContext>(opt =>

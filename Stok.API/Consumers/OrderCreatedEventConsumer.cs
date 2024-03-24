@@ -38,7 +38,9 @@ namespace Stok.API.Consumers
                         stock.Count -= item.Count;
                     }
                     await _appDbContext.SaveChangesAsync();
+
                     _logger.LogInformation($"Stock was reserved for Buyer Id:{context.Message.BuyerId}");
+
                     var sendEndpoint = await _sendEndpointProvider
                         .GetSendEndpoint(new Uri($"queue:{RabbitMqSettingsConst.StockReservedEventQueueName}"));
 
@@ -49,18 +51,19 @@ namespace Stok.API.Consumers
                         OrderItems = context.Message.OrderItems,
                         Payment = context.Message.Payment
                     };
-
-                    await _sendEndpointProvider.Send(stockReservedEvent);
+                    await sendEndpoint.Send(stockReservedEvent);
                 }
-
             }
             else
             {
+
                 await _publishEndpoint.Publish(new StockNotReservedEvent
                 {
                     OrderId = context.Message.OrderId,
                     Message = "Not enough stock."
                 });
+                _logger.LogInformation($"Stock was not enough Buyer Id:{context.Message.BuyerId}");
+
             }
         }
     }
