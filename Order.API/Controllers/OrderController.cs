@@ -40,6 +40,7 @@ namespace Order.API.Controllers
                 {
                     Price = _.Price,
                     ProductId = _.ProductId,
+                    ProductName = _.ProductName,
                     Count = _.Count
                 });
             });
