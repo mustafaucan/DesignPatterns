@@ -11,6 +11,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMassTransit(opt =>
 {
     opt.AddConsumer<PaymentCompletedEventConsumer>();
+    opt.AddConsumer<PaymentFailedEventConsumer>();
+    opt.AddConsumer<StockNotReservedEventConsumer>();
+
     opt.UsingRabbitMq((context, cfg) =>
     {
 
@@ -19,6 +22,15 @@ builder.Services.AddMassTransit(opt =>
         {
             e.ConfigureConsumer<PaymentCompletedEventConsumer>(context);
         });
+        cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderPaymentFailedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<PaymentFailedEventConsumer>(context);
+        });
+        cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderStockNotReservedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<StockNotReservedEventConsumer>(context);
+        });
+
     });
 });
 
@@ -28,7 +40,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

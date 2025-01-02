@@ -38,11 +38,13 @@ using (var scope = app.Services.CreateScope())
     context.Stocks.Add(new Stock
     {
         ProductId = 1,
+        ProductName = "Klavye",
         Count = 100
     });
     context.Stocks.Add(new Stock
     {
         ProductId = 2,
+        ProductName = "Monitör",
         Count = 311
     });
     context.SaveChanges();

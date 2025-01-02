@@ -17,7 +17,7 @@ namespace Order.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -68,6 +68,10 @@ namespace Order.API.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
