@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Shared;
 using Shared.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace SagaStateMachineWorkerService.Models
             Initially(
                 When(OrderCreatedRequestEvent)
                     .Then(context =>
-                    {                        
+                    {
                         context.Saga.BuyerId = context.Message.BuyerId;
                         context.Saga.OrderId = context.Message.OrderId;
                         context.Saga.CreatedDate = DateTime.Now;
@@ -43,6 +44,10 @@ namespace SagaStateMachineWorkerService.Models
                     .Then(context =>
                     {
                         Console.WriteLine($"OrderCreatedRequestEvent before : {context.Saga}");
+                    })
+                    .Publish(context => new OrderCreatedEvent(context.Saga.CorrelationId)
+                    {
+                        OrderItems = context.Message.OrderItems
                     })
                     .TransitionTo(OrderCreated)
                     .Then(context =>

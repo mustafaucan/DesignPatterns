@@ -1,6 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using Stok.API.Consumers;
 using Stok.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,21 +15,21 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddLogging();
 builder.Services.AddMassTransit(opt =>
 {
-    //opt.AddConsumer<OrderCreatedEventConsumer>();
+    opt.AddConsumer<OrderCreatedEventConsumer>();
     //opt.AddConsumer<PaymentFailedEventConsumer>();
 
-    //opt.UsingRabbitMq((context, cfg) =>
-    //{
-    //    cfg.Host(builder.Configuration.GetConnectionString("RabbitMq"));
-    //    cfg.ReceiveEndpoint(RabbitMqSettingsConst.StockOrderCreatedEventQueueName, e =>
-    //    {            
-    //        e.ConfigureConsumer<OrderCreatedEventConsumer>(context);
-    //    });
-    //    cfg.ReceiveEndpoint(RabbitMqSettingsConst.StockPaymentFailedEventQueueName, e =>
-    //    {
-    //        e.ConfigureConsumer<PaymentFailedEventConsumer>(context);
-    //    });
-    //});    
+    opt.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetConnectionString("RabbitMq"));
+        cfg.ReceiveEndpoint(RabbitMqSettingsConst.StockOrderCreatedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<OrderCreatedEventConsumer>(context);
+        });
+        //cfg.ReceiveEndpoint(RabbitMqSettingsConst.StockPaymentFailedEventQueueName, e =>
+        //{
+        //    e.ConfigureConsumer<PaymentFailedEventConsumer>(context);
+        //});
+    });
 });
 
 builder.Services.AddDbContext<AppDbContext>(opt =>

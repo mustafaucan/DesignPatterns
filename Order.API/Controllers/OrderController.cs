@@ -72,7 +72,7 @@ namespace Order.API.Controllers
                 });
             });
 
-            var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue: {RabbitMqSettingsConst.OrderSaga}"));
+            var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMqSettingsConst.OrderSaga}"));
 
             await sendEndpoint.Send(orderCreatedRequestEvent);
 
