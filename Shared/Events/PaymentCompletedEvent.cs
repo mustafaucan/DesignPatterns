@@ -1,19 +1,19 @@
-﻿using Shared.Interfaces;
+﻿using MassTransit;
+using Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared
+namespace Shared.Events
 {
-    public class StockNotReservedEvent : IStockNotReservedEvent
+    public class PaymentCompletedEvent : IPaymentCompletedEvent
     {
-        public StockNotReservedEvent(Guid correlationId)
+        public PaymentCompletedEvent(Guid correlationId)
         {
             CorrelationId = correlationId;
         }
-        public string Reason { get; set; }
 
         public Guid CorrelationId { get; }
     }

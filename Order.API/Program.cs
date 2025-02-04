@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Order.API.Consumers;
 using Order.API.Models;
 using Shared;
 
@@ -9,27 +10,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMassTransit(opt =>
 {
-    //opt.AddConsumer<PaymentCompletedEventConsumer>();
-    //opt.AddConsumer<PaymentFailedEventConsumer>();
+    opt.AddConsumer<OrderRequestCompletedEventConsumer>();
+    opt.AddConsumer<OrderRequestFailedEventConsumer>();
     //opt.AddConsumer<StockNotReservedEventConsumer>();
 
     opt.UsingRabbitMq((context, cfg) =>
     {
 
         cfg.Host(builder.Configuration.GetConnectionString("RabbitMq"));
-        //cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderPaymentCompletedEventQueueName, e =>
-        //{
-        //    e.ConfigureConsumer<PaymentCompletedEventConsumer>(context);
-        //});
-        //cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderPaymentFailedEventQueueName, e =>
-        //{
-        //    e.ConfigureConsumer<PaymentFailedEventConsumer>(context);
-        //});
-        //cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderStockNotReservedEventQueueName, e =>
-        //{
-        //    e.ConfigureConsumer<StockNotReservedEventConsumer>(context);
-        //});
-
+        cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderRequestCompletedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<OrderRequestCompletedEventConsumer>(context);
+        });
+        cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderRequestFailedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<OrderRequestFailedEventConsumer>(context);
+        });
     });
 });
 
